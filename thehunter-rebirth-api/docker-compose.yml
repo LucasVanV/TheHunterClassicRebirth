@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: thehunter-rebirth-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: thehunter_rebirth
+      POSTGRES_USER: thehunter_rebirth
+      POSTGRES_PASSWORD: thehunter_rebirth
+
+    ports:
+      - "5432:5432"
+
+    volumes:
+      - thehunter_rebirth_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  thehunter_rebirth_postgres_data:

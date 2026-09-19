@@ -1,0 +1,38 @@
+info:
+  name: Refresh-OldRefreshToken
+  type: http
+  seq: 8
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/refresh"
+  body:
+    type: json
+    data: |-
+      {
+        "refreshToken": "{{oldRefreshToken}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Should return 401", function () {
+          expect(res.status).to.equal(401);
+        });
+
+        test("Should return INVALID_REFRESH_TOKEN", function () {
+          expect(res.body.code).to.equal("INVALID_REFRESH_TOKEN");
+        });
+
+        test("Should return correct status in body", function () {
+          expect(res.body.status).to.equal(401);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

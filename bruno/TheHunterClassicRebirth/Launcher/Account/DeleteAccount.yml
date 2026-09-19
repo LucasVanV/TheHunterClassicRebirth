@@ -1,0 +1,38 @@
+info:
+  name: DeleteAccount
+  type: http
+  seq: 5
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/api/account"
+  body:
+    type: json
+    data: |-
+      {
+        "currentPassword": "NewPassword2!"
+      }
+  auth:
+    type: bearer
+    token: "{{accessToken}}"
+
+runtime:
+  scripts:
+    - type: after-response
+      code: |-
+        if (res.status === 204) {
+          bru.setEnvVar("accessToken", "");
+          bru.setEnvVar("refreshToken", "");
+        }
+    - type: tests
+      code: |-
+        test("Should return 204", function () {
+          expect(res.status).to.equal(204);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

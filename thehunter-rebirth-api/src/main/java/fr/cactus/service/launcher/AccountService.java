@@ -130,7 +130,7 @@ public class AccountService {
         userRepository.delete(user);
     }
 
-    private User getUser(UUID userId) {
+    public User getUser(UUID userId) {
         return userRepository
                 .findByIdOptional(userId)
                 .orElseThrow(() ->

@@ -1,6 +1,6 @@
 # TheHunterClassicRebirth
 
-<img width="283" height="259" alt="TheHunterClassicRebirth logo" src="https://github.com/user-attachments/assets/409524ae-45bf-4f76-b06c-2cdd2a421717" />
+<img width="101" height="101" alt="image" src="https://github.com/user-attachments/assets/35c19704-f864-40f0-ac46-8d1595df9bde" />
 
 TheHunterClassicRebirth is an open-source preservation project for **theHunter Classic**.
 

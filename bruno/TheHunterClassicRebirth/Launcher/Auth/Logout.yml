@@ -1,0 +1,42 @@
+info:
+  name: Logout
+  type: http
+  seq: 9
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/logout"
+  body:
+    type: json
+    data: |-
+      {
+        "refreshToken": "{{refreshToken}}"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        bru.setEnvVar(
+          "oldRefreshToken",
+          bru.getEnvVar("refreshToken")
+        );
+    - type: after-response
+      code: |-
+        if (res.status === 204) {
+          bru.setEnvVar("accessToken", "");
+          bru.setEnvVar("refreshToken", "");
+        }
+    - type: tests
+      code: |-
+        test("Should return 204", function () {
+          expect(res.status).to.equal(204);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

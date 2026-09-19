@@ -1,0 +1,40 @@
+info:
+  name: Register-ExistingEmail
+  type: http
+  seq: 2
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/register"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "hunter@test.com",
+        "password": "Password1!"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        bru.setEnvVar("accessToken", "");
+        bru.setEnvVar("refreshToken", "");
+    - type: tests
+      code: |-
+        test("Should return 409", function () {
+          expect(res.status).to.equal(409);
+        });
+
+        test("Should return EMAIL_ALREADY_IN_USE", function () {
+          expect(res.body.status).to.equal(409);
+          expect(res.body.code).to.equal("EMAIL_ALREADY_IN_USE");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

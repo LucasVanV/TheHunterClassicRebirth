@@ -1,0 +1,59 @@
+info:
+  name: Register
+  type: http
+  seq: 1
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/register"
+  body:
+    type: json
+    data: |-
+      {
+        "email": "lucas.vanvooren@outlook.com",
+        "password": "Password1!"
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: before-request
+      code: |-
+        bru.setEnvVar("accessToken", "");
+        bru.setEnvVar("refreshToken", "");
+    - type: after-response
+      code: |-
+        if (res.status === 201) {
+          bru.setEnvVar("accessToken", res.body.accessToken);
+          bru.setEnvVar("refreshToken", res.body.refreshToken);
+        }
+    - type: tests
+      code: |-
+        test("Should return 201", function () {
+          expect(res.status).to.equal(201);
+        });
+
+        test("Should return an access token", function () {
+          expect(res.body.accessToken).to.be.a("string");
+          expect(res.body.accessToken.length).to.be.greaterThan(0);
+        });
+
+        test("Should return a refresh token", function () {
+          expect(res.body.refreshToken).to.be.a("string");
+          expect(res.body.refreshToken.length).to.be.greaterThan(0);
+        });
+
+        test("Should return the created user", function () {
+          expect(res.body.user.email).to.equal("hunter@test.com");
+        });
+
+        test("Should assign HUNTER role", function () {
+          expect(res.body.user.roles).to.include("HUNTER");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false

@@ -1,0 +1,44 @@
+info:
+  name: Refresh-MissingToken
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/auth/refresh"
+  body:
+    type: json
+    data: |-
+      {
+        "refreshToken": ""
+      }
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Should return 400", function () {
+          expect(res.status).to.equal(400);
+        });
+
+        test("Should return VALIDATION_ERROR", function () {
+          expect(res.body.status).to.equal(400);
+          expect(res.body.code).to.equal("VALIDATION_ERROR");
+        });
+
+        test("Should return REFRESH_TOKEN_REQUIRED", function () {
+          const error = res.body.errors.find(
+            error => error.field === "refreshToken"
+          );
+
+          expect(error).to.exist;
+          expect(error.code).to.equal("REFRESH_TOKEN_REQUIRED");
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: false
